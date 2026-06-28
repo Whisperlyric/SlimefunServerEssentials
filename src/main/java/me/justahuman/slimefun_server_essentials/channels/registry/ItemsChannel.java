@@ -28,13 +28,12 @@ public class ItemsChannel extends AbstractChannel {
             for (SlimefunItem item : entry.getValue()) {
                 items.add(item.getId(), JsonUtils.serializeItem(item));
             }
-            JsonUtils.generated("items/" + addonId, items);
+            JsonUtils.generated("slimefun/items/" + addonId, items);
         }
 
         for (Map.Entry<SlimefunAddon, List<SlimefunItem>> entry : Utils.getSortedAddonRegistry().entrySet()) {
             List<SlimefunItem> items = entry.getValue();
             ByteArrayDataOutput itemsPacket = ByteStreams.newDataOutput();
-            DataUtils.writeVersion(itemsPacket);
             itemsPacket.writeInt(items.size());
             for (SlimefunItem item : items) {
                 itemsPacket.writeUTF(item.getId());

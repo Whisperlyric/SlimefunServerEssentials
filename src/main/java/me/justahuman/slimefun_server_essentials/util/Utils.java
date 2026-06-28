@@ -1,6 +1,5 @@
 package me.justahuman.slimefun_server_essentials.util;
 
-import io.github.bakedlibs.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
@@ -29,7 +28,13 @@ import java.util.function.Function;
 public class Utils {
     private static final Map<SlimefunAddon, List<SlimefunItem>> SORTED_ADDON_REGISTRY = new LinkedHashMap<>();
     private static final Map<RecipeType, List<SlimefunItem>> SORTED_RECIPE_REGISTRY = new LinkedHashMap<>();
-    private static final ItemStack WATER_BOTTLE = CustomItemStack.create(Material.POTION, meta -> ((PotionMeta) meta).setBasePotionType(PotionType.WATER));
+    private static final ItemStack WATER_BOTTLE = createItem(Material.POTION, meta -> ((PotionMeta) meta).setBasePotionType(PotionType.WATER));
+
+    private static ItemStack createItem(Material material, java.util.function.Consumer<org.bukkit.inventory.meta.ItemMeta> metaConsumer) {
+        ItemStack item = new ItemStack(material);
+        item.editMeta(metaConsumer);
+        return item;
+    }
 
     public static void load() {
         SORTED_ADDON_REGISTRY.clear();

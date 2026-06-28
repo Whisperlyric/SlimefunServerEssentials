@@ -1,6 +1,5 @@
 package me.justahuman.slimefun_server_essentials.implementation.core;
 
-import io.github.bakedlibs.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -72,10 +71,24 @@ import static me.justahuman.slimefun_server_essentials.implementation.core.Defau
 
 public class DefaultCategories {
     private static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
-    private static final ItemStack TREE_INPUT = CustomItemStack.create(Material.OAK_SAPLING, "&eAge 0 Sapling");
-    private static final ItemStack TREE_OUTPUT = CustomItemStack.create(Material.OAK_SAPLING, "&eAge 1 Sapling");
-    private static final ItemStack CROP_INPUT = CustomItemStack.create(Material.POTATO, "&eStage 0 Growth");
-    private static final ItemStack CROP_OUTPUT = CustomItemStack.create(Material.POTATO, "&eStage 1 Growth");
+    private static final ItemStack TREE_INPUT = createNamedItem(Material.OAK_SAPLING, "&eAge 0 Sapling");
+    private static final ItemStack TREE_OUTPUT = createNamedItem(Material.OAK_SAPLING, "&eAge 1 Sapling");
+    private static final ItemStack CROP_INPUT = createNamedItem(Material.POTATO, "&eStage 0 Growth");
+    private static final ItemStack CROP_OUTPUT = createNamedItem(Material.POTATO, "&eStage 1 Growth");
+
+    private static ItemStack createNamedItem(Material material, String name) {
+        ItemStack item = new ItemStack(material);
+        // Translate & color codes to § then convert to Adventure Component
+        String legacy = name.replace("&", "\u00a7");
+        item.editMeta(meta -> meta.displayName(net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.legacySection().deserialize(legacy)));
+        return item;
+    }
+
+    private static ItemStack copyWithAmount(ItemStack template, int amount) {
+        ItemStack copy = template.clone();
+        copy.setAmount(amount);
+        return copy;
+    }
 
     public static void register(SlimefunEssentialsRegisterEvent event) {
         event.registerItemExporter(MultiBlockMachine.class, (multiblock, builder) -> {
@@ -98,7 +111,7 @@ public class DefaultCategories {
                 final List<ItemStack> inputs = new ArrayList<>(List.of(machineFuel.getInput()));
                 if (provider instanceof Reactor reactor && reactor.getCoolant() != null) {
                     for (int count = (int) Math.ceil(machineFuel.getTicks() / 50D); count != 0; count -= Math.min(count, 64)) {
-                        inputs.add(CustomItemStack.create(reactor.getCoolant(), Math.min(count, 64)));
+                        inputs.add(copyWithAmount(reactor.getCoolant(), Math.min(count, 64)));
                     }
                 }
                 builder.recipe(new RecipeBuilder().sfTicks(machineFuel.getTicks()).inputs(inputs).output(machineFuel.getOutput()));
@@ -216,7 +229,7 @@ public class DefaultCategories {
         });
         event.registerItemExporter(ExpCollector.class, (collector, builder) -> {
             builder.recipe(new RecipeBuilder().input("$:1").output(SlimefunItems.FILLED_FLASK_OF_KNOWLEDGE).sfTicks(1));
-            builder.energy(-collector.getEnergyConsumption());
+            builder.energy(-ReflectionUtils.getStaticField(ExpCollector.class, "ENERGY_CONSUMPTION", 10));
         });
         event.registerItemExporter(ChargingBench.class, (bench, builder) -> {
             chargingBenchRecipe(bench, builder, SlimefunItems.DURALUMIN_MULTI_TOOL);

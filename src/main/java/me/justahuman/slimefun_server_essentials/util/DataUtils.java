@@ -23,6 +23,9 @@ public class DataUtils {
             itemStack = new ItemStack(Material.AIR);
         }
 
+        // Convert SlimefunItemStack etc. to CraftItemStack for NBT API compatibility
+        itemStack = JsonUtils.ensureCraftItemStack(itemStack);
+
         final ByteArrayDataOutput output = ByteStreams.newDataOutput();
         final ReadWriteNBT itemNBT = NBT.itemStackToNBT(itemStack);
         final ReadWriteNBT components = itemNBT.getCompound("components");

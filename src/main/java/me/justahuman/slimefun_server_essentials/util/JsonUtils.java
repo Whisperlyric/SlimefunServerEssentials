@@ -244,6 +244,9 @@ public class JsonUtils {
             itemStack = new ItemStack(Material.AIR);
         }
 
+        // Convert SlimefunItemStack etc. to CraftItemStack for NBT API compatibility
+        itemStack = ensureCraftItemStack(itemStack);
+
         final JsonObject itemObject = new JsonObject();
         final ReadWriteNBT itemNBT = NBT.itemStackToNBT(itemStack);
         final ReadWriteNBT components = itemNBT.getCompound("components");
@@ -285,7 +288,7 @@ public class JsonUtils {
     private static OptimizedRecipe optimizeRecipeInputs(List<RecipeBuilder> recipes, RecipeBuilder recipe1) {
         for (int index = 0; index < recipes.size(); index++) {
             RecipeBuilder recipe2 = recipes.get(index);
-            boolean canMerge = recipe1.getComplex().equals(recipe2.getComplex())
+            boolean canMerge = itemStackListEquals(recipe1.getComplex(), recipe2.getComplex())
                     && recipe1.getInputs().size() == recipe2.getInputs().size()
                     && recipe1.getOutputs().equals(recipe2.getOutputs())
                     && recipe1.getLabels().equals(recipe2.getLabels())
@@ -343,4 +346,43 @@ public class JsonUtils {
     }
 
     private record OptimizedRecipe(int index, RecipeBuilder recipe) {}
+
+    /**
+     * Safe comparison for Lists of ItemStack that avoids ClassCastException
+     * when SlimefunItemStack cannot be cast to CraftItemStack (Paper 26.1.2+).
+     * Converts items to CraftItemStack first, then uses isSimilar.
+     */
+    public static boolean itemStackListEquals(List<ItemStack> a, List<ItemStack> b) {
+        if (a == b) return true;
+        if (a == null || b == null) return false;
+        if (a.size() != b.size()) return false;
+        for (int i = 0; i < a.size(); i++) {
+            ItemStack ia = a.get(i);
+            ItemStack ib = b.get(i);
+            if (ia == ib) continue;
+            if (ia == null || ib == null) return false;
+            if (ia.getAmount() != ib.getAmount()) return false;
+            // Convert to CraftItemStack to enable safe comparison
+            ItemStack ca = ensureCraftItemStack(ia);
+            ItemStack cb = ensureCraftItemStack(ib);
+            if (!ca.isSimilar(cb)) return false;
+        }
+        return true;
+    }
+
+    /**
+     * Convert any ItemStack (including SlimefunItemStack) to a CraftItemStack
+     * by creating a new vanilla ItemStack with the same material, amount, and meta.
+     * This avoids ClassCastException when NBT API or Paper internals try to
+     * cast non-CraftItemStack objects to CraftItemStack (Paper 26.1.2+).
+     */
+    public static ItemStack ensureCraftItemStack(ItemStack item) {
+        // Always create a new vanilla ItemStack to avoid SlimefunItemStack
+        // ClassCastException with CraftItemStack cast in Paper 26.1.2+
+        ItemStack copy = new ItemStack(item.getType(), item.getAmount());
+        if (item.hasItemMeta()) {
+            copy.setItemMeta(item.getItemMeta());
+        }
+        return copy;
+    }
 }

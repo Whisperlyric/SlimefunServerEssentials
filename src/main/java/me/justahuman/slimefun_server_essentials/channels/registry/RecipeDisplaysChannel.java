@@ -18,12 +18,11 @@ public class RecipeDisplaysChannel extends AbstractChannel {
         }
 
         for (Map.Entry<String, AbstractDisplayBuilder<?>> entry : RecipeDisplays.getRecipeDisplays().entrySet()) {
-            JsonUtils.generated("recipe_display/" + format(entry.getKey()), entry.getValue().toJson());
+            JsonUtils.generated("slimefun/recipe_displays/" + format(entry.getKey()), entry.getValue().toJson());
         }
 
         for (Map.Entry<String, AbstractDisplayBuilder<?>> entry : RecipeDisplays.getRecipeDisplays().entrySet()) {
             ByteArrayDataOutput displayPacket = ByteStreams.newDataOutput();
-            DataUtils.writeVersion(displayPacket);
             displayPacket.writeUTF(entry.getKey());
             entry.getValue().toBytes(displayPacket);
             messages.addAll(splitMessage(displayPacket.toByteArray()));

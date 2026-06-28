@@ -252,7 +252,7 @@ public class RecipeBuilder {
         return Objects.equals(this.sfTicks, other.sfTicks)
                 && Objects.equals(this.ticks, other.ticks)
                 && Objects.equals(this.energy, other.energy)
-                && Objects.equals(this.complex, other.complex)
+                && JsonUtils.itemStackListEquals(this.complex, other.complex)
                 && Objects.equals(this.inputs, other.inputs)
                 && Objects.equals(this.outputs, other.outputs)
                 && Objects.equals(this.labels, other.labels);

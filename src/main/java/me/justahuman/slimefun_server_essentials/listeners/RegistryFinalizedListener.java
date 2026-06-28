@@ -4,6 +4,8 @@ import io.github.thebusybiscuit.slimefun4.api.events.SlimefunItemRegistryFinaliz
 import me.justahuman.slimefun_server_essentials.SlimefunServerEssentials;
 import me.justahuman.slimefun_server_essentials.api.event.SlimefunEssentialsRegisterEvent;
 import me.justahuman.slimefun_server_essentials.implementation.DisplayComponentTypes;
+import me.justahuman.slimefun_server_essentials.implementation.ItemGroupsExporter;
+import me.justahuman.slimefun_server_essentials.implementation.LabelsExporter;
 import me.justahuman.slimefun_server_essentials.implementation.RecipeCategoryExporters;
 import me.justahuman.slimefun_server_essentials.implementation.RecipeDisplays;
 import me.justahuman.slimefun_server_essentials.util.JsonUtils;
@@ -27,5 +29,9 @@ public class RegistryFinalizedListener implements Listener {
         SlimefunServerEssentials.getItemsChannel().load();
         SlimefunServerEssentials.getRecipeCategoriesChannel().load();
         SlimefunServerEssentials.getRecipeDisplaysChannel().load();
+
+        // 生成资源包专用 JSON（无对应二进制通道，仅用于资源包模式）
+        ItemGroupsExporter.generate();
+        LabelsExporter.generate();
     }
 }

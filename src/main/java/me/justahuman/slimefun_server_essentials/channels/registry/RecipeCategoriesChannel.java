@@ -34,7 +34,6 @@ public class RecipeCategoriesChannel extends AbstractChannel {
             RecipeCategoryBuilder.optimize(itemCategories);
 
             ByteArrayDataOutput itemCategoriesPacket = ByteStreams.newDataOutput();
-            DataUtils.writeVersion(itemCategoriesPacket);
             itemCategoriesPacket.writeInt(itemCategories.size());
             for (RecipeCategoryBuilder category : itemCategories) {
                 categories.add(category.getId(), category.toJson());
@@ -54,14 +53,13 @@ public class RecipeCategoriesChannel extends AbstractChannel {
             RecipeCategoryBuilder.optimize(builderMap.values());
 
             ByteArrayDataOutput typeCategoriesPacket = ByteStreams.newDataOutput();
-            DataUtils.writeVersion(typeCategoriesPacket);
             typeCategoriesPacket.writeInt(builderMap.size());
             for (RecipeCategoryBuilder category : builderMap.values()) {
                 categories.add(category.getId(), category.toJson());
                 category.toBytes(typeCategoriesPacket);
             }
             messages.addAll(splitMessage(typeCategoriesPacket.toByteArray()));
-            JsonUtils.generated("recipe_categories/" + addonId, categories);
+            JsonUtils.generated("slimefun/recipes/" + addonId, categories);
         }
     }
 
