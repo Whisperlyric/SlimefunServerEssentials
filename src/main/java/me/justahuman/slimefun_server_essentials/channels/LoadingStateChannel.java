@@ -5,22 +5,41 @@ import com.google.common.io.ByteStreams;
 import me.justahuman.slimefun_server_essentials.SlimefunServerEssentials;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRegisterChannelEvent;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 public class LoadingStateChannel extends AbstractChannel {
-    @EventHandler @Override
+    private final Set<UUID> scheduled = new HashSet<>();
+
+    @EventHandler
+    @Override
     public void onPlayerRegisterChannel(PlayerRegisterChannelEvent event) {
+        // 调用父类：将玩家加入 players 集合，执行 onRegisterChannel 回调
+        super.onPlayerRegisterChannel(event);
         if (!event.getChannel().equals(getChannel())) {
             return;
         }
 
         Player player = event.getPlayer();
-        // 延迟 10 ticks（500ms）后发送，等待客户端 ClientConfigPayload 到达
-        // 因为 MC|Register 在 Configuration phase 触发，而 client_config 在 Play phase 才发送
+        UUID playerId = player.getUniqueId();
+        // 防止重复调度
+        if (!scheduled.add(playerId)) {
+            return;
+        }
+
+        // 客户端注册 loading_state 频道意味着已进入 Play phase，codec 已激活。
+        // 延迟 20 ticks（1000ms）等待 ClientConfigPayload 到达，再发送 loading_state。
         SlimefunServerEssentials.getInstance().getServer().getScheduler().runTaskLater(
                 SlimefunServerEssentials.getInstance(),
-                () -> sendLoadingState(player),
-                10L
+                () -> {
+                    scheduled.remove(playerId);
+                    sendLoadingState(player);
+                },
+                20L
         );
     }
 
@@ -60,5 +79,12 @@ public class LoadingStateChannel extends AbstractChannel {
     @Override
     public String getChannel() {
         return "slimefun_server_essentials:loading_state";
+    }
+
+    @EventHandler
+    @Override
+    public void onQuit(PlayerQuitEvent event) {
+        super.onQuit(event);
+        scheduled.remove(event.getPlayer().getUniqueId());
     }
 }

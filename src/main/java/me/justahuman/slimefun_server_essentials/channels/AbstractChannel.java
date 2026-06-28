@@ -109,13 +109,14 @@ public abstract class AbstractChannel implements PluginMessageListener, Listener
         List<byte[]> split = new ArrayList<>();
         for (int i = 0; i < pieces; i++) {
             byte[] indexBytes = ByteBuffer.allocate(4).putInt(i).array();
-            byte[] bytes = new byte[MAX_MESSAGE_SIZE];
             int start = i * SPLIT_MESSAGE_SIZE;
             int end = Math.min(data.length, (i + 1) * SPLIT_MESSAGE_SIZE);
+            int dataLength = end - start;
+            byte[] bytes = new byte[12 + dataLength];
             System.arraycopy(messageIdBytes, 0, bytes, 0, 4);
             System.arraycopy(piecesBytes, 0, bytes, 4, 4);
             System.arraycopy(indexBytes, 0, bytes, 8, 4);
-            System.arraycopy(data, start, bytes, 12, end - start);
+            System.arraycopy(data, start, bytes, 12, dataLength);
             split.add(bytes);
         }
         return split;
