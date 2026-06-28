@@ -18,7 +18,7 @@ public class ComponentTypesChannel extends AbstractChannel {
         }
 
         for (Map.Entry<String, ComponentType> entry : DisplayComponentTypes.getComponentTypes().entrySet()) {
-            JsonUtils.generated("slimefun/component_types/" + format(entry.getKey()), entry.getValue().toJson());
+            JsonUtils.generated("assets/slimefun/slimefun/component_types/" + format(entry.getKey()), entry.getValue().toJson());
         }
 
         for (Map.Entry<String, ComponentType> entry : DisplayComponentTypes.getComponentTypes().entrySet()) {

@@ -8,7 +8,7 @@ import me.justahuman.slimefun_server_essentials.util.JsonUtils;
 import java.util.Map;
 
 /**
- * 导出配方标签到 {@code slimefun/labels/<addon>.json}，供客户端资源包模式加载。
+ * 导出配方标签到 {@code assets/slimefun/slimefun/labels/slimefun.json}，供客户端资源包模式加载。
  *
  * 客户端格式见 {@code SlimefunLabel.deserialize}：
  * <pre>
@@ -42,8 +42,7 @@ public final class LabelsExporter {
             labels.add(entry.getKey(), labelObj);
         }
 
-        // 所有标签放在一个 slimefun 命名空间文件中
-        JsonUtils.generated("slimefun/labels/slimefun", labels);
+        JsonUtils.generated("assets/slimefun/slimefun/labels/slimefun", labels);
     }
 
     private static JsonObject modeJson(SimpleRenderable renderable) {

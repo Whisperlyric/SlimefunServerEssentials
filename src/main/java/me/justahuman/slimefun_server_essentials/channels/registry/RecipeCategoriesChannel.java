@@ -59,7 +59,7 @@ public class RecipeCategoriesChannel extends AbstractChannel {
                 category.toBytes(typeCategoriesPacket);
             }
             messages.addAll(splitMessage(typeCategoriesPacket.toByteArray()));
-            JsonUtils.generated("slimefun/recipes/" + addonId, categories);
+            JsonUtils.generated("assets/" + addonId + "/slimefun/recipes/" + addonId, categories);
         }
     }
 

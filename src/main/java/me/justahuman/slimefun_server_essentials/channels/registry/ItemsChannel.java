@@ -28,7 +28,7 @@ public class ItemsChannel extends AbstractChannel {
             for (SlimefunItem item : entry.getValue()) {
                 items.add(item.getId(), JsonUtils.serializeItem(item));
             }
-            JsonUtils.generated("slimefun/items/" + addonId, items);
+            JsonUtils.generated("assets/" + addonId + "/slimefun/items/" + addonId, items);
         }
 
         for (Map.Entry<SlimefunAddon, List<SlimefunItem>> entry : Utils.getSortedAddonRegistry().entrySet()) {

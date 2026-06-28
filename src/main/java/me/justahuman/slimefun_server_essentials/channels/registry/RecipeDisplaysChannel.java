@@ -18,7 +18,7 @@ public class RecipeDisplaysChannel extends AbstractChannel {
         }
 
         for (Map.Entry<String, AbstractDisplayBuilder<?>> entry : RecipeDisplays.getRecipeDisplays().entrySet()) {
-            JsonUtils.generated("slimefun/recipe_displays/" + format(entry.getKey()), entry.getValue().toJson());
+            JsonUtils.generated("assets/slimefun/slimefun/recipe_displays/" + format(entry.getKey()), entry.getValue().toJson());
         }
 
         for (Map.Entry<String, AbstractDisplayBuilder<?>> entry : RecipeDisplays.getRecipeDisplays().entrySet()) {

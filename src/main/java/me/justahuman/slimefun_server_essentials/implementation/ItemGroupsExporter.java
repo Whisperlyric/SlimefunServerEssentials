@@ -21,7 +21,7 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * 导出 Slimefun 物品组到 {@code slimefun/item_groups/<addon>.json}，
+ * 导出 Slimefun 物品组到 {@code assets/<addon>/slimefun/item_groups/<addon>.json}，
  * 供客户端资源包模式加载，用于 JEI 物品分级展示。
  *
  * 客户端格式见 {@code SlimefunItemGroup.deserialize}：
@@ -72,7 +72,7 @@ public final class ItemGroupsExporter {
         }
 
         for (Map.Entry<String, JsonObject> entry : groupsByAddon.entrySet()) {
-            JsonUtils.generated("slimefun/item_groups/" + entry.getKey(), entry.getValue());
+            JsonUtils.generated("assets/" + entry.getKey() + "/slimefun/item_groups/" + entry.getKey(), entry.getValue());
         }
     }
 
