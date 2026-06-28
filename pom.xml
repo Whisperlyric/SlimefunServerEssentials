@@ -6,7 +6,7 @@
 
     <groupId>me.justahuman</groupId>
     <artifactId>SlimefunServerEssentials</artifactId>
-    <version>0.2.1</version>
+    <version>0.2.2</version>
     <packaging>jar</packaging>
 
     <name>SlimefunServerEssentials</name>

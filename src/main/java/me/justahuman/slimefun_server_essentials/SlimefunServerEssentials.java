@@ -3,6 +3,7 @@ package me.justahuman.slimefun_server_essentials;
 import de.tr7zw.nbtapi.NBT;
 import lombok.Getter;
 import me.justahuman.slimefun_server_essentials.channels.registry.ItemsChannel;
+import me.justahuman.slimefun_server_essentials.channels.ClientConfigChannel;
 import me.justahuman.slimefun_server_essentials.channels.LoadingStateChannel;
 import me.justahuman.slimefun_server_essentials.channels.registry.RecipeCategoriesChannel;
 import me.justahuman.slimefun_server_essentials.channels.registry.RecipeDisplaysChannel;
@@ -16,6 +17,7 @@ public final class SlimefunServerEssentials extends JavaPlugin {
     private static @Getter SlimefunServerEssentials instance;
 
     private static @Getter LoadingStateChannel loadingStateChannel;
+    private static @Getter ClientConfigChannel clientConfigChannel;
 
     private static @Getter ItemsChannel itemsChannel;
     private static @Getter RecipeCategoriesChannel recipeCategoriesChannel;
@@ -26,12 +28,13 @@ public final class SlimefunServerEssentials extends JavaPlugin {
     public void onEnable() {
         if (!NBT.preloadApi()) {
             getLogger().warning("NBT-API wasn't initialized properly, disabling the plugin");
-            getPluginLoader().disablePlugin(this);
+            getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
         instance = this;
 
+        clientConfigChannel = new ClientConfigChannel();
         loadingStateChannel = new LoadingStateChannel();
 
         itemsChannel = new ItemsChannel();

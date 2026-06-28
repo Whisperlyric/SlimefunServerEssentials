@@ -32,8 +32,10 @@ public class ItemsChannel extends AbstractChannel {
         }
 
         for (Map.Entry<SlimefunAddon, List<SlimefunItem>> entry : Utils.getSortedAddonRegistry().entrySet()) {
+            String addonId = entry.getKey().getName().toLowerCase(Locale.ROOT).replace(" ", "_");
             List<SlimefunItem> items = entry.getValue();
             ByteArrayDataOutput itemsPacket = ByteStreams.newDataOutput();
+            itemsPacket.writeUTF(addonId);
             itemsPacket.writeInt(items.size());
             for (SlimefunItem item : items) {
                 itemsPacket.writeUTF(item.getId());

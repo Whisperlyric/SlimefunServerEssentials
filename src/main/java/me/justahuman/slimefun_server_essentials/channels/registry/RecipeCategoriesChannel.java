@@ -34,6 +34,8 @@ public class RecipeCategoriesChannel extends AbstractChannel {
             RecipeCategoryBuilder.optimize(itemCategories);
 
             ByteArrayDataOutput itemCategoriesPacket = ByteStreams.newDataOutput();
+            itemCategoriesPacket.writeUTF(addonId);
+            itemCategoriesPacket.writeByte(0);
             itemCategoriesPacket.writeInt(itemCategories.size());
             for (RecipeCategoryBuilder category : itemCategories) {
                 categories.add(category.getId(), category.toJson());
@@ -53,6 +55,8 @@ public class RecipeCategoriesChannel extends AbstractChannel {
             RecipeCategoryBuilder.optimize(builderMap.values());
 
             ByteArrayDataOutput typeCategoriesPacket = ByteStreams.newDataOutput();
+            typeCategoriesPacket.writeUTF(addonId);
+            typeCategoriesPacket.writeByte(1);
             typeCategoriesPacket.writeInt(builderMap.size());
             for (RecipeCategoryBuilder category : builderMap.values()) {
                 categories.add(category.getId(), category.toJson());
